@@ -6,44 +6,29 @@ import android.graphics.Typeface;
 import com.wooplr.spotlight.utils.Utils;
 
 /**
- * Created by jitender on 14/06/16.
+ * @author jitender on 14/06/16
  */
-
+@SuppressWarnings("unused")
 public class SpotlightConfig {
     private int maskColor;
     private long introAnimationDuration;
     private boolean isRevealAnimationEnabled = true;
-    private long fadingTextDuration;
     private int padding;
     private boolean dismissOnTouch;
-    private boolean dismissOnBackpress;
+    private boolean dismissOnBackPress;
     private boolean isPerformClick;
-    private int headingTvSize;
-    private int headingTvColor;
-    private CharSequence headingTvText;
-    private int subHeadingTvSize;
-    private int subHeadingTvColor;
-    private CharSequence subHeadingTvText;
     private long lineAnimationDuration;
     private int lineStroke;
     private int lineAndArcColor;
-    private Typeface mTypeface;
 
     public SpotlightConfig() {
         this.maskColor = 0x70000000;
         this.introAnimationDuration = 400;
         this.isRevealAnimationEnabled = true;
-        this.fadingTextDuration = 400;
         this.padding = 20;
         this.dismissOnTouch = true;
-        this.dismissOnBackpress=true;
         this.isPerformClick = true;
-        this.headingTvSize = 24;
-        this.headingTvColor = Color.parseColor("#eb273f");
-        this.headingTvText = "Hello";
-        this.subHeadingTvSize = 24;
-        this.subHeadingTvColor = Color.parseColor("#ffffff");
-        this.subHeadingTvText = "Hello";
+        this.dismissOnBackPress = true;
         this.lineAnimationDuration = 300;
         this.lineStroke = Utils.dpToPx(4);
         this.lineAndArcColor = Color.parseColor("#eb273f");
@@ -73,14 +58,6 @@ public class SpotlightConfig {
         isRevealAnimationEnabled = revealAnimationEnabled;
     }
 
-    public long getFadingTextDuration() {
-        return fadingTextDuration;
-    }
-
-    public void setFadingTextDuration(long fadingTextDuration) {
-        this.fadingTextDuration = fadingTextDuration;
-    }
-
     public int getPadding() {
         return padding;
     }
@@ -103,54 +80,6 @@ public class SpotlightConfig {
 
     public void setPerformClick(boolean performClick) {
         isPerformClick = performClick;
-    }
-
-    public int getHeadingTvSize() {
-        return headingTvSize;
-    }
-
-    public void setHeadingTvSize(int headingTvSize) {
-        this.headingTvSize = headingTvSize;
-    }
-
-    public int getHeadingTvColor() {
-        return headingTvColor;
-    }
-
-    public void setHeadingTvColor(int headingTvColor) {
-        this.headingTvColor = headingTvColor;
-    }
-
-    public CharSequence getHeadingTvText() {
-        return headingTvText;
-    }
-
-    public void setHeadingTvText(CharSequence headingTvText) {
-        this.headingTvText = headingTvText;
-    }
-
-    public int getSubHeadingTvSize() {
-        return subHeadingTvSize;
-    }
-
-    public void setSubHeadingTvSize(int subHeadingTvSize) {
-        this.subHeadingTvSize = subHeadingTvSize;
-    }
-
-    public int getSubHeadingTvColor() {
-        return subHeadingTvColor;
-    }
-
-    public void setSubHeadingTvColor(int subHeadingTvColor) {
-        this.subHeadingTvColor = subHeadingTvColor;
-    }
-
-    public CharSequence getSubHeadingTvText() {
-        return subHeadingTvText;
-    }
-
-    public void setSubHeadingTvText(CharSequence subHeadingTvText) {
-        this.subHeadingTvText = subHeadingTvText;
     }
 
     public long getLineAnimationDuration() {
@@ -177,19 +106,11 @@ public class SpotlightConfig {
         this.lineAndArcColor = lineAndArcColor;
     }
 
-    public Typeface getmTypeface() {
-        return mTypeface;
+    public boolean isDismissOnBackPress() {
+        return dismissOnBackPress;
     }
 
-    public void setmTypeface(Typeface mTypeface) {
-        this.mTypeface = mTypeface;
-    }
-
-    public boolean isDismissOnBackpress() {
-        return dismissOnBackpress;
-    }
-
-    public void setDismissOnBackpress(boolean dismissOnBackpress) {
-        this.dismissOnBackpress = dismissOnBackpress;
+    public void setDismissOnBackPress(boolean dismissOnBackPress) {
+        this.dismissOnBackPress = dismissOnBackPress;
     }
 }

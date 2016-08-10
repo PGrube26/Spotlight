@@ -3,6 +3,7 @@ package com.wooplr.spotlight.target;
 /**
  * Adapted from github.com/dupengtao/LineAnimation
  */
+@SuppressWarnings("unused")
 public class AnimPoint {
     private float curX;
     private float curY;

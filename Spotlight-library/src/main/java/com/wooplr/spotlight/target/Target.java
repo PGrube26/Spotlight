@@ -5,9 +5,8 @@ import android.graphics.Rect;
 import android.view.View;
 
 /**
- * Created by jitender on 10/06/16.
+ * @author jitender on 10/06/16
  */
-
 public interface Target {
 
     Point getPoint();

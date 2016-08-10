@@ -13,7 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wooplr.spotlight.SpotlightView;
-import com.wooplr.spotlight.prefs.PreferencesManager;
+import com.wooplr.spotlight.prefs.ViewShowStore;
+import com.wooplr.spotlight.utils.SpotlightListener;
 import com.wooplr.spotlight.utils.Utils;
 
 import java.util.Random;
@@ -23,12 +24,9 @@ import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-//    static {
-//        AppCompatDelegate.setCompatVectorFromSourcesEnabled(true);
-//    }
 
     private FloatingActionButton fab;
-    private static final String INTRO_CARD = "fab_intro";
+    private static final int INTRO_CARD = 1;
     private boolean isRevealEnabled = true;
 
     @BindView(R.id.switchAnimation)
@@ -63,12 +61,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 showIntro(fab, INTRO_CARD);
             }
-        }, 2400);
+        }, 1000);
     }
 
     @Override
     public void onClick(View view) {
-        PreferencesManager mPreferencesManager = new PreferencesManager(MainActivity.this);
         DisplayMetrics displaymetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenWidth = displaymetrics.widthPixels;
@@ -84,14 +81,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     switchAnimation.setText("Switch to Fadein");
                     isRevealEnabled = true;
                 }
-                mPreferencesManager.resetAll();
+                ViewShowStore.resetPref(this);
                 break;
-
             case R.id.reset:
-                mPreferencesManager.resetAll();
+                ViewShowStore.resetPref(this);
                 break;
             case R.id.resetAndPlay:
-                mPreferencesManager.resetAll();
+                ViewShowStore.resetPref(this);
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -100,39 +96,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }, 400);
                 break;
             case R.id.changePosAndPlay:
-                mPreferencesManager.resetAll();
+                ViewShowStore.resetPref(this);
                 Random r = new Random();
                 int right = r.nextInt((screenWidth - Utils.dpToPx(16)) - 16) + 16;
                 int bottom = r.nextInt((screenHeight - Utils.dpToPx(16)) - 16) + 16;
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
                 params.setMargins(Utils.dpToPx(16), Utils.dpToPx(16), right, bottom);
                 fab.setLayoutParams(params);
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showIntro(fab, INTRO_CARD);
+                    }
+                }, 200);
                 break;
         }
     }
 
-    private void showIntro(View view, String usageId) {
+    private void showIntro(View view, int usageId) {
         new SpotlightView.Builder(this)
                 .introAnimationDuration(400)
-                .enableRevalAnimation(isRevealEnabled)
+                .enableRevealAnimation(isRevealEnabled)
                 .performClick(true)
-                .fadeinTextDuration(400)
-                //.setTypeface(FontUtil.get(this, "RemachineScript_Personal_Use"))
-                .headingTvColor(Color.parseColor("#eb273f"))
-                .headingTvSize(32)
-                .headingTvText("Love")
-                .subHeadingTvColor(Color.parseColor("#ffffff"))
-                .subHeadingTvSize(16)
-                .subHeadingTvText("Like the picture?\nLet others know.")
                 .maskColor(Color.parseColor("#dc000000"))
                 .target(view)
-                .lineAnimDuration(400)
-                .lineAndArcColor(Color.parseColor("#eb273f"))
+                .lineAnimDuration(200)
+                .setDescriptionView(R.layout.sample_description_view)
+                .lineAndArcColor(Color.parseColor("#e1e1e1"))
                 .dismissOnTouch(true)
-                .dismissOnBackPress(true)
-                //.enableDismissAfterShown(true)
-                .usageId(usageId) //UNIQUE ID
-                .show();
+                .enableDismissAfterShown(true)
+                .targetPadding(36)
+                .setListener(new SpotlightListener() {
+                    @Override
+                    public void onSpotlightDismissed(int spotlightViewId) {
+                        Toast.makeText(MainActivity.this, "Spotlight " + spotlightViewId + " was dismissed.", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .showCircle(usageId);
     }
 }
 

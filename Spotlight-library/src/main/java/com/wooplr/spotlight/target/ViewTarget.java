@@ -5,12 +5,11 @@ import android.graphics.Rect;
 import android.view.View;
 
 /**
- * Created by jitender on 10/06/16.
+ * @author by jitender on 10/06/16
  */
 public class ViewTarget implements Target {
 
     private View view;
-
 
     public ViewTarget(View view) {
         this.view = view;
@@ -18,7 +17,6 @@ public class ViewTarget implements Target {
 
     @Override
     public Point getPoint() {
-
         int[] location = new int[2];
         view.getLocationInWindow(location);
         return new Point(location[0] + (view.getWidth() / 2), location[1] + (view.getHeight() / 2));

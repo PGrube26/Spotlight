@@ -10,7 +10,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 
 import com.wooplr.spotlight.target.AnimPoint;
 
@@ -20,35 +19,43 @@ import java.util.List;
 /**
  * Adapted from github.com/dupengtao/LineAnimation
  */
+@SuppressWarnings("unused")
 public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.AnimatorUpdateListener {
 
     private static final String FACTOR_X = "factorX";
     private static final String FACTOR_Y = "factorY";
-    private final Path mPath2;
-    private final Paint mPaint2;
+    private final Path pathLeft;
+    private final Paint paintLeft;
+    private final Path pathRight;
+    private final Paint paintRight;
     private float factorY, factorX;
-    private AnimPoint curAnimPoint = null;
+    private AnimPoint curAnimLeftPoint = null;
+    private AnimPoint curAnimRightPoint = null;
     private int moveTimes;
-    private List<AnimPoint> mAnimPoints = new ArrayList<AnimPoint>();
-    private ObjectAnimator mLineAnim;
+    private boolean twoWay;
+    private List<AnimPoint> animPointsLeft = new ArrayList<>();
+    private List<AnimPoint> animPointsRight = new ArrayList<>();
+    private ObjectAnimator lineAnim;
     private DisplayMode curDisplayMode = DisplayMode.Appear;
     private long lineAnimDuration = 400;
     private int lineColor = Color.parseColor("#eb273f");
     private int lineStroke = 8;
 
-    private Animator.AnimatorListener mListner;
+    private Animator.AnimatorListener animatorListener;
 
     public NormalLineAnimDrawable() {
         this(null);
     }
 
     public NormalLineAnimDrawable(Paint paint) {
-        mPath2 = new Path();
-        mPaint2 = paint == null ? getDefaultPaint() : paint;
+        pathLeft = new Path();
+        paintLeft = paint == null ? getDefaultPaint() : paint;
+        pathRight = new Path();
+        paintRight = paint == null ? getDefaultPaint() : paint;
     }
 
     private Paint getDefaultPaint() {
-        Paint p = new Paint();
+        final Paint p = new Paint();
         p.setAntiAlias(true);
         p.setDither(true);
         p.setStyle(Paint.Style.STROKE);
@@ -60,14 +67,11 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
     }
 
     private ObjectAnimator getLineAnim() {
-        PropertyValuesHolder pvMoveY = PropertyValuesHolder.ofFloat(FACTOR_Y,
-                0f, 1f);
-        PropertyValuesHolder pvMoveX = PropertyValuesHolder.ofFloat(FACTOR_X,
-                0f, 1f);
-        ObjectAnimator lineAnim = ObjectAnimator.ofPropertyValuesHolder(
-                this, pvMoveY, pvMoveX).setDuration(lineAnimDuration);
+        final PropertyValuesHolder pvMoveY = PropertyValuesHolder.ofFloat(FACTOR_Y, 0f, 1f);
+        final PropertyValuesHolder pvMoveX = PropertyValuesHolder.ofFloat(FACTOR_X, 0f, 1f);
+        final ObjectAnimator lineAnim = ObjectAnimator.ofPropertyValuesHolder(this, pvMoveY, pvMoveX).setDuration(lineAnimDuration);
         lineAnim.setRepeatMode(ValueAnimator.RESTART);
-        lineAnim.setRepeatCount(mAnimPoints.size() - 1);
+        lineAnim.setRepeatCount(animPointsLeft.size() - 1);
         lineAnim.addUpdateListener(this);
         if (android.os.Build.VERSION.SDK_INT > 17) {
             lineAnim.setAutoCancel(true);
@@ -76,51 +80,56 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
             @Override
             public void onAnimationStart(Animator animation) {
                 moveTimes = 0;
-                curAnimPoint = mAnimPoints.get(moveTimes);
-                if (mListner != null)
-                    mListner.onAnimationStart(animation);
+                curAnimLeftPoint = animPointsLeft.get(moveTimes);
+                if (twoWay) {
+                    curAnimRightPoint = animPointsRight.get(moveTimes);
+                }
+                if (animatorListener != null)
+                    animatorListener.onAnimationStart(animation);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (mListner != null)
-                    mListner.onAnimationEnd(animation);
+                if (animatorListener != null)
+                    animatorListener.onAnimationEnd(animation);
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                if (mListner != null)
-                    mListner.onAnimationCancel(animation);
+                if (animatorListener != null)
+                    animatorListener.onAnimationCancel(animation);
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
                 moveTimes++;
-                curAnimPoint = mAnimPoints.get(moveTimes);
-                if (mListner != null)
-                    mListner.onAnimationRepeat(animation);
+                curAnimLeftPoint = animPointsLeft.get(moveTimes);
+                if (twoWay) {
+                    curAnimRightPoint = animPointsRight.get(moveTimes);
+                }
+                if (animatorListener != null)
+                    animatorListener.onAnimationRepeat(animation);
             }
         });
-        //lineAnim.addListener(mListner);
+        //lineAnim.addListener(animatorListener);
         return lineAnim;
     }
 
-    @NonNull
-    public void setmListner(Animator.AnimatorListener mListner) {
-        this.mListner = mListner;
+    public void setAnimatorListener(Animator.AnimatorListener animatorListener) {
+        this.animatorListener = animatorListener;
     }
 
     public void playAnim(List<AnimPoint> animPoints) {
         if (animPoints != null) {
-            mAnimPoints = animPoints;
+            animPointsLeft = animPoints;
         }
-        if (mLineAnim == null) {
-            mLineAnim = getLineAnim();
+        if (lineAnim == null) {
+            lineAnim = getLineAnim();
         }
-        if (mLineAnim.isRunning()) {
-            mLineAnim.cancel();
+        if (lineAnim.isRunning()) {
+            lineAnim.cancel();
         }
-        mLineAnim.start();
+        lineAnim.start();
     }
 
     public void playAnim() {
@@ -154,10 +163,22 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
     }
 
     private void drawLine(List<AnimPoint> animPoints, int num, int size) {
-        for (int i = num, j = size; i < j; i++) {
-            AnimPoint p = animPoints.get(i);
-            mPath2.moveTo(p.getCurX(), p.getCurY());
-            mPath2.lineTo(p.getMoveX(), p.getMoveY());
+        for (int i = num; i < size; i++) {
+            final AnimPoint p = animPoints.get(i);
+            pathLeft.moveTo(p.getCurX(), p.getCurY());
+            pathLeft.lineTo(p.getMoveX(), p.getMoveY());
+        }
+    }
+
+    private void drawLineRight(List<AnimPoint> animPoints, int num) {
+        drawLineRight(animPoints, num, animPoints.size());
+    }
+
+    private void drawLineRight(List<AnimPoint> animPoints, int num, int size) {
+        for (int i = num; i < size; i++) {
+            final AnimPoint p = animPoints.get(i);
+            pathRight.moveTo(p.getCurX(), p.getCurY());
+            pathRight.lineTo(p.getMoveX(), p.getMoveY());
         }
     }
 
@@ -171,24 +192,45 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
 
     @Override
     public void draw(Canvas canvas) {
-        if (curAnimPoint != null) {
-            mPath2.rewind();
-            float curX = curAnimPoint.getCurX();
-            float curY = curAnimPoint.getCurY();
-            float moveX = curAnimPoint.getMoveX();
-            float moveY = curAnimPoint.getMoveY();
+        if (curAnimLeftPoint != null) {
+            pathLeft.rewind();
+            final float curX = curAnimLeftPoint.getCurX();
+            final float curY = curAnimLeftPoint.getCurY();
+            final float moveX = curAnimLeftPoint.getMoveX();
+            final float moveY = curAnimLeftPoint.getMoveY();
             if (curDisplayMode == DisplayMode.Disappear) {
-                mPath2.moveTo(curX == moveX ? moveX : curX + ((moveX - curX) * factorX), curY == moveY ? moveY : curY + ((moveY - curY) * factorY));
-                mPath2.lineTo(moveX, moveY);
-                drawLine(mAnimPoints, moveTimes + 1);
+                pathLeft.moveTo(curX == moveX ? moveX : curX + ((moveX - curX) * factorX), curY == moveY ? moveY : curY + ((moveY - curY) * factorY));
+                pathLeft.lineTo(moveX, moveY);
+                drawLine(animPointsLeft, moveTimes + 1);
             } else if (curDisplayMode == DisplayMode.Appear) {
-                drawLine(mAnimPoints, 0, moveTimes);
-                mPath2.moveTo(curX, curY);
-                mPath2.lineTo(curX == moveX ? moveX : curX + ((moveX - curX) * factorX), curY == moveY ? moveY : curY + ((moveY - curY) * factorY));
+                drawLine(animPointsLeft, 0, moveTimes);
+                pathLeft.moveTo(curX, curY);
+                pathLeft.lineTo(curX == moveX ? moveX : curX + ((moveX - curX) * factorX), curY == moveY ? moveY : curY + ((moveY - curY) * factorY));
             }
-            canvas.drawPath(mPath2, mPaint2);
+            canvas.drawPath(pathLeft, paintLeft);
         } else {
-            canvas.drawPath(mPath2, mPaint2);
+            canvas.drawPath(pathLeft, paintLeft);
+        }
+        if (twoWay) {
+            if (curAnimRightPoint != null) {
+                pathRight.rewind();
+                final float curX = curAnimRightPoint.getCurX();
+                final float curY = curAnimRightPoint.getCurY();
+                final float moveX = curAnimRightPoint.getMoveX();
+                final float moveY = curAnimRightPoint.getMoveY();
+                if (curDisplayMode == DisplayMode.Disappear) {
+                    pathRight.moveTo(curX == moveX ? moveX : curX + ((moveX - curX) * factorX), curY == moveY ? moveY : curY + ((moveY - curY) * factorY));
+                    pathRight.lineTo(moveX, moveY);
+                    drawLineRight(animPointsRight, moveTimes + 1);
+                } else if (curDisplayMode == DisplayMode.Appear) {
+                    drawLineRight(animPointsRight, 0, moveTimes);
+                    pathRight.moveTo(curX, curY);
+                    pathRight.lineTo(curX == moveX ? moveX : curX + ((moveX - curX) * factorX), curY == moveY ? moveY : curY + ((moveY - curY) * factorY));
+                }
+                canvas.drawPath(pathRight, paintRight);
+            } else {
+                canvas.drawPath(pathRight, paintRight);
+            }
         }
     }
 
@@ -208,11 +250,16 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
     }
 
     public List<AnimPoint> getPoints() {
-        return mAnimPoints;
+        return animPointsLeft;
     }
 
     public void setPoints(List<AnimPoint> animPoints) {
-        mAnimPoints = animPoints;
+        animPointsLeft = animPoints;
+    }
+
+    public void setSecondPoints(List<AnimPoint> secondPoints) {
+        twoWay = true;
+        animPointsRight = secondPoints;
     }
 
     public void setLineAnimDuration(long lineAnimDuration) {
@@ -232,8 +279,14 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
      */
     public enum DisplayMode {
 
+        /**
+         * Lets disappear the lines.
+         */
         Disappear,
 
+        /**
+         * Lets appear the lines.
+         */
         Appear,
     }
 

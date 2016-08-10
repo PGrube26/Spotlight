@@ -1,11 +1,14 @@
 package com.wooplr.spotlight.utils;
 
-
 /**
- * Created by jitender on 10/06/16.
+ * @author PGrube26
  */
-
 public interface SpotlightListener {
 
-    void onUserClicked(String spotlightViewId);
+    /**
+     * Called when the spotlight is dismissed.
+     *
+     * @param spotlightViewId the id of the spotlight which is dismissed
+     */
+    void onSpotlightDismissed(int spotlightViewId);
 }
