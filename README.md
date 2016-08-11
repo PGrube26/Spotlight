@@ -38,7 +38,7 @@ new SpotlightView.Builder(this)
 
     ```javascript
     dependencies {
-        compile 'com.github.pgrube26:Spotlight:1.0.0'
+        compile 'com.github.pgrube26:Spotlight:v1.0.0'
     }
     ```
 
@@ -62,7 +62,7 @@ new SpotlightView.Builder(this)
     <dependency>
         <groupId>com.github.pgrube26</groupId>
         <artifactId>Spotlight</artifactId>
-        <version>1.0.0</version>
+        <version>v1.0.0</version>
     </dependency>
     ```
 
