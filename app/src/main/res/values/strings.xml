@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Spotlight</string>
 
-    <string name="sample_overlay_test">This text is shown inside a relative layout which could include image views as well. But the content should not
-        be to large so that the whole view still fits in the devices screen.</string>
+    <string name="sample_overlay_test">This text is shown inside a relative layout which could include image views as well. However the content should not
+        be too large so that the whole view still fits in the device screen.</string>
 
-    <string name="sample_overlay_text_2">This is a second text shown in here. As you can see this is a different TextView with different style. No
-        problem in this implementation of SpotlightView.</string>
+    <string name="sample_overlay_text_2">There is a second text shown in here. As you can see this is a different TextView with a different style. There are
+        no issues in this implementation of SpotlightView.</string>
 </resources>

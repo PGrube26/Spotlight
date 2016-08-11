@@ -7,29 +7,22 @@ Spotlight is an Android library used to onboard users by showcasing specific fea
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Spotlight-green.svg?style=flat)](http://android-arsenal.com/details/1/3730)
 
 #Screen
-<img src="https://raw.githubusercontent.com/wooplr/Spotlight/master/art/intro.gif?token=AA5ZAHdvAspW6Zj8YyyKamkV7jWXFtMHks5XaQovwA%3D%3D"/>
+![Sample](https://github.com/PGrube26/Spotlight/blob/master/art/sample.gif)
 
 #Usage
 ```java
- new SpotlightView.Builder(this)
-                .setRevealAnimationDuration(400)
-                .enableRevalAnimation(isRevealEnabled)
+new SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(isRevealEnabled)
                 .performClick(true)
-                .fadinTextDuration(400)
-                .headingTvColor(Color.parseColor("#eb273f"))
-                .headingTvSize(32)
-                .headingTvText("Love")
-                .subHeadingTvColor(Color.parseColor("#ffffff"))
-                .subHeadingTvSize(16)
-                .subHeadingTvText("Like the picture?\nLet others know.")
-                .setMaskColor(Color.parseColor("#dc000000"))
-                .setTarget(view)
-                .lineAnimDuration(400)
-                .lineAndArcColor(Color.parseColor("#eb273f"))
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(view)
+                .lineAnimationDuration(200)
+                .setDescriptionView(R.layout.sample_description_view)
+                .lineAndArcColor(Color.parseColor("#e1e1e1"))
                 .dismissOnTouch(true)
                 .enableDismissAfterShown(true)
-                .setUsageId(usageId)
-                .show();
+                .showCircle(SPOTLIGHT_ID);
 ```
 
 ## Download
@@ -50,7 +43,7 @@ Spotlight is an Android library used to onboard users by showcasing specific fea
 
     ```javascript
     dependencies {
-        compile 'com.github.wooplr:Spotlight:1.2.1'
+        compile 'com.github.PGrube26:Spotlight:1.0.0'
     }
     ```
 
@@ -72,67 +65,11 @@ Spotlight is an Android library used to onboard users by showcasing specific fea
 
     ```xml
     <dependency>
-        <groupId>com.github.wooplr</groupId>
+        <groupId>com.github.PGrube26</groupId>
         <artifactId>Spotlight</artifactId>
-        <version>1.2.1</version>
+        <version>1.0.0</version>
     </dependency>
     ```
-
-# Builder Methods
-
-### maskColor(int)
-Overlay Color
-
-### target(View)
-View to showcase
-
-### introAnimationDuration(long)
-Intro animation duration (For Reveal and Fadein)
-
-### enableRevalAnimation(boolean)
-Enable reval animation (Only for Lollipop and above)
-
-### fadeinTextDuration(long)
-Fade in animation duration for spotlight text (Heading and Sub-heading)
-
-### headingTvSize(int)
-Size of heading text
-
-### headingTvColor(int)
-Color of heading text
-
-### headingTvText(CharSequence)
-Text to display in heading
-
-### subHeadingTvSize(int)
-Size of sub-heading text
-
-### subHeadingTvColor(int)
-Color of sub-heading text
-
-### subHeadingTvText(CharSequence)
-Text to display in sub-heading
-
-### setTypeface(Typeface)
-Custom font for text in spotlight view
-
-### lineAndArcColor(int)
-Color of the spotlight line
-
-### lineAnimDuration(long)
-Line animation duration
-
-### performClick(boolean)
-Perform a click on target view
-
-### usageId(String)
-Unique id for each spotlight
-
-### dismissOnTouch(boolean)
-Dismiss spotlight on touch outside
-
-### enableDismissAfterShown(boolean)
-Dismiss spotlight on touch outside after spotlight is completely visible
 
 # Configuration Method
 ```java
@@ -144,10 +81,6 @@ config.setLineAndArcColor(0xFFFFFFFF);
 .setConfiguration(config) //
 ```
 
-#Author
-
-[Jitender Chaudhary](https://github.com/29jitender)
-
 #Proguard rules
 
 ```java
@@ -157,6 +90,8 @@ config.setLineAndArcColor(0xFFFFFFFF);
 ```
 
 #Credits
+[Jitender Chaudhary](https://github.com/29jitender)
+
 [MaterialIntroView](https://github.com/iammert/MaterialIntroView)
 
 [Rahul Khanna](https://www.linkedin.com/in/rahul-khanna-01705827)

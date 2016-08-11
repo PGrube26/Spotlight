@@ -1118,7 +1118,7 @@ public class SpotlightView extends FrameLayout {
         }
 
         /**
-         * Builds a  spotlight with rectangle target view but does not show it. The id you set here will be the parameter in a listener call when the
+         * Builds a  spotlight with rectangular target view but does not show it. The id you set here will be the parameter in a listener call when the
          * spotlight is dismissed.
          *
          * @param spotLightId an id for the spotlight to identify it
