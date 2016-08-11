@@ -1,6 +1,7 @@
 package com.example.spotlight;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 
 import com.wooplr.spotlight.SpotlightView;
 import com.wooplr.spotlight.prefs.ViewShowStore;
-import com.wooplr.spotlight.utils.SpotlightListener;
 import com.wooplr.spotlight.utils.Utils;
 
 import java.util.Random;
@@ -114,25 +114,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showIntro(View view, int usageId) {
-        new SpotlightView.Builder(this)
+        SpotlightView spotlightView = new SpotlightView.Builder(this)
                 .introAnimationDuration(400)
                 .enableRevealAnimation(isRevealEnabled)
                 .performClick(true)
                 .maskColor(Color.parseColor("#dc000000"))
                 .target(view)
-                .lineAnimDuration(200)
+                .lineAnimationDuration(200)
                 .setDescriptionView(R.layout.sample_description_view)
                 .lineAndArcColor(Color.parseColor("#e1e1e1"))
                 .dismissOnTouch(true)
                 .enableDismissAfterShown(true)
-                .targetPadding(36)
-                .setListener(new SpotlightListener() {
-                    @Override
-                    public void onSpotlightDismissed(int spotlightViewId) {
-                        Toast.makeText(MainActivity.this, "Spotlight " + spotlightViewId + " was dismissed.", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .showCircle(usageId);
+                .buildCircleSpot(usageId);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            spotlightView.setTargetPadding(0);
+        }
+        spotlightView.show(this);
     }
 }
 

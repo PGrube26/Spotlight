@@ -247,7 +247,7 @@ public class LinePointCalculator {
             case PositionCalculator.TOP_LEFT:
                 return linesForTopLeft(shapeType, screenWidth, screenHeight, targetShape);
             case PositionCalculator.TOP_MIDDLE:
-                return linesForTopMiddle(shapeType, screenWidth, screenHeight, targetShape);
+                return linesForTopMiddle(shapeType, screenHeight, targetShape);
             case PositionCalculator.TOP_RIGHT:
                 return linesForTopRight(shapeType, screenWidth, screenHeight, targetShape);
             case PositionCalculator.MIDDLE_LEFT:
@@ -260,7 +260,7 @@ public class LinePointCalculator {
             case PositionCalculator.BOTTOM_LEFT:
                 return linesForBottomLeft(shapeType, screenWidth, targetShape);
             case PositionCalculator.BOTTOM_MIDDLE:
-                return linesForBottomMiddle(shapeType, screenWidth, targetShape);
+                return linesForBottomMiddle(shapeType, targetShape);
             case PositionCalculator.BOTTOM_RIGHT:
                 return linesForBottomRight(shapeType, screenWidth, targetShape);
             default:
@@ -269,7 +269,7 @@ public class LinePointCalculator {
     }
 
     private List<AnimPoint> linesForTopLeft(int shapeType, int screenWidth, int screenHeight, TargetShape targetShape) {
-        calcTopLayoutParams(screenWidth, screenHeight);
+        calcTopLayoutParams(screenHeight);
         if (shapeType == SpotlightView.SHAPE_TYPE_CIRCLE) {
             final List<AnimPoint> animPoints = new ArrayList<>();
             animPoints.add(new AnimPoint(
@@ -291,7 +291,7 @@ public class LinePointCalculator {
     }
 
     private List<AnimPoint> linesForTopRight(int shapeType, int screenWidth, int screenHeight, TargetShape targetShape) {
-        calcTopLayoutParams(screenWidth, screenHeight);
+        calcTopLayoutParams(screenHeight);
         if (shapeType == SpotlightView.SHAPE_TYPE_CIRCLE) {
             final List<AnimPoint> animPoints = new ArrayList<>();
             animPoints.add(new AnimPoint(
@@ -339,8 +339,8 @@ public class LinePointCalculator {
         return animPoints;
     }
 
-    private List<AnimPoint> linesForTopMiddle(int shapeType, int screenWidth, int screenHeight, TargetShape targetShape) {
-        calcTopLayoutParams(screenWidth, screenHeight);
+    private List<AnimPoint> linesForTopMiddle(int shapeType, int screenHeight, TargetShape targetShape) {
+        calcTopLayoutParams(screenHeight);
         final List<AnimPoint> animPoints = new ArrayList<>();
         if (shapeType == SpotlightView.SHAPE_TYPE_CIRCLE) {
             animPoints.add(new AnimPoint(
@@ -416,7 +416,7 @@ public class LinePointCalculator {
     }
 
     private List<AnimPoint> linesForBottomLeft(int shapeType, int screenWidth, TargetShape targetShape) {
-        calcBelowLayoutParams(screenWidth);
+        calcBelowLayoutParams();
         if (shapeType == SpotlightView.SHAPE_TYPE_CIRCLE) {
             final List<AnimPoint> animPoints = new ArrayList<>();
             animPoints.add(new AnimPoint(
@@ -438,7 +438,7 @@ public class LinePointCalculator {
     }
 
     private List<AnimPoint> linesForBottomRight(int shapeType, int screenWidth, TargetShape targetShape) {
-        calcBelowLayoutParams(screenWidth);
+        calcBelowLayoutParams();
         if (shapeType == SpotlightView.SHAPE_TYPE_CIRCLE) {
             final List<AnimPoint> animPoints = new ArrayList<>();
             animPoints.add(new AnimPoint(
@@ -465,12 +465,6 @@ public class LinePointCalculator {
         final int targetShapeDescriptionViewSpaceMiddle = targetShapeDescriptionViewSpace / 2;
 
         final List<AnimPoint> animPoints = new ArrayList<>();
-//        animPoints.add(new AnimPoint(
-//                targetView.getPoint().x,
-//                targetView.getPoint().y - targetShape.getYRadius() - extraPaddingForArc,
-//                targetView.getPoint().x,
-//                ((FrameLayout.LayoutParams) descriptionView.getLayoutParams()).topMargin + getHelpViewRealHeight()
-//        ));
         animPoints.add(new AnimPoint(
                 targetView.getPoint().x,
                 targetView.getPoint().y - targetShape.getYRadius() - extraPaddingForArc,
@@ -492,9 +486,9 @@ public class LinePointCalculator {
         return animPoints;
     }
 
-    private List<AnimPoint> linesForBottomMiddle(int shapeType, int screenWidth, TargetShape targetShape) {
+    private List<AnimPoint> linesForBottomMiddle(int shapeType, TargetShape targetShape) {
         final List<AnimPoint> animPoints = new ArrayList<>();
-        calcBelowLayoutParams(screenWidth);
+        calcBelowLayoutParams();
         if (shapeType == SpotlightView.SHAPE_TYPE_CIRCLE) {
             animPoints.add(new AnimPoint(
                     targetView.getViewRight() - targetView.getViewWidth() / 2,
@@ -523,11 +517,8 @@ public class LinePointCalculator {
                 descriptionView.getHeight() : ((FrameLayout.LayoutParams) descriptionView.getLayoutParams()).height;
     }
 
-    private void calcTopLayoutParams(int screenWidth, int screenHeight) {
+    private void calcTopLayoutParams(int screenHeight) {
         final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) descriptionView.getLayoutParams();
-        if (descriptionView.getWidth() > screenWidth - 2 * gutter) {
-            layoutParams.width = screenWidth - 2 * gutter;
-        }
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
 
         final int restHeight = screenHeight - targetView.getViewBottom() - gutter;
@@ -541,11 +532,8 @@ public class LinePointCalculator {
         descriptionView.setLayoutParams(layoutParams);
     }
 
-    private void calcBelowLayoutParams(int screenWidth) {
+    private void calcBelowLayoutParams() {
         final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) descriptionView.getLayoutParams();
-        if (descriptionView.getWidth() > screenWidth - 2 * gutter) {
-            layoutParams.width = screenWidth - 2 * gutter;
-        }
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
 
         final int restHeight = targetView.getViewTop() - 2 * gutter;

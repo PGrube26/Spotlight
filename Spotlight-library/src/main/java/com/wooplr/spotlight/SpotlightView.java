@@ -715,6 +715,7 @@ public class SpotlightView extends FrameLayout {
 
             }
         });
+
         pathAnimDrawable.playAnim();
     }
 
@@ -767,73 +768,73 @@ public class SpotlightView extends FrameLayout {
         boundingAnimDrawable.playAnim();
     }
 
-    private void setMaskColor(int maskColor) {
+    public void setMaskColor(int maskColor) {
         this.maskColor = maskColor;
     }
 
-    private void setReady(boolean ready) {
-        isReady = ready;
+    public void setTargetPadding(int padding) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            this.padding = padding / 3;
+        } else {
+            this.padding = padding;
+        }
     }
 
-    private void setPadding(int padding) {
-        this.padding = padding;
-    }
-
-    private void setDismissOnTouch(boolean dismissOnTouch) {
+    public void setDismissOnTouch(boolean dismissOnTouch) {
         this.dismissOnTouch = dismissOnTouch;
     }
 
-    private void setDismissOnBackPress(boolean dismissOnBackPress) {
+    public void setDismissOnBackPress(boolean dismissOnBackPress) {
         this.dismissOnBackPress = dismissOnBackPress;
     }
 
-    private void setPerformClick(boolean performClick) {
+    public void setPerformClick(boolean performClick) {
         isPerformClick = performClick;
     }
 
-    private void setExtraPaddingForHalfShape(int extraPaddingForHalfShape) {
+    public void setExtraPaddingForHalfShape(int extraPaddingForHalfShape) {
         linePointCalculator.setExtraPaddingForArc(extraPaddingForHalfShape);
         this.extraPaddingForHalfShape = extraPaddingForHalfShape;
     }
 
-    private void setIntroAnimationDuration(long introAnimationDuration) {
+    public void setIntroAnimationDuration(long introAnimationDuration) {
         this.introAnimationDuration = introAnimationDuration;
     }
 
-    private void setRevealAnimationEnabled(boolean revealAnimationEnabled) {
+    public void setRevealAnimationEnabled(boolean revealAnimationEnabled) {
         isRevealAnimationEnabled = revealAnimationEnabled;
     }
 
-    private void setTargetShape(TargetShape targetShape) {
+    public void setTargetShape(TargetShape targetShape) {
         this.targetShape = targetShape;
     }
 
-    private void setTargetView(Target targetView) {
+    public void setTarget(Target targetView) {
         this.targetView = targetView;
         linePointCalculator.setTargetView(targetView);
     }
 
-    private void setSpotLightId(int spotLightId) {
+    public void setSpotLightId(int spotLightId) {
         this.spotLightId = spotLightId;
     }
 
-    private void setLineAnimationDuration(long lineAnimationDuration) {
+    public void setLineAnimationDuration(long lineAnimationDuration) {
         this.lineAnimationDuration = lineAnimationDuration;
     }
 
-    private void setLineAndArcColor(int lineAndArcColor) {
+    public void setLineAndArcColor(int lineAndArcColor) {
         this.lineAndArcColor = lineAndArcColor;
     }
 
-    private void showOnlyOnce() {
+    public void showOnlyOnce() {
         showOnlyOnce = true;
     }
 
-    private void setLineStroke(int lineStroke) {
+    public void setLineStroke(int lineStroke) {
         this.lineStroke = lineStroke;
     }
 
-    private void setLayoutResource(int layoutResource, int buttonId, final OnClickListener listener) {
+    public void setDescriptionView(int layoutResource, int buttonId, final OnClickListener listener) {
         descriptionView = LayoutInflater.from(getContext()).inflate(layoutResource, this, false);
         addView(descriptionView);
         descriptionView.setVisibility(INVISIBLE);
@@ -852,7 +853,7 @@ public class SpotlightView extends FrameLayout {
         }
     }
 
-    private void setConfiguration(SpotlightConfig configuration) {
+    public void setConfiguration(SpotlightConfig configuration) {
         if (configuration != null) {
             this.maskColor = configuration.getMaskColor();
             this.introAnimationDuration = configuration.getIntroAnimationDuration();
@@ -869,6 +870,10 @@ public class SpotlightView extends FrameLayout {
 
     private void setShapeType(int shapeType) {
         this.shapeType = shapeType;
+    }
+
+    private void setReady(boolean ready) {
+        isReady = ready;
     }
 
     /**
@@ -931,7 +936,7 @@ public class SpotlightView extends FrameLayout {
          * @return the same builder instance
          */
         public Builder target(View view) {
-            spotlightView.setTargetView(new ViewTarget(view));
+            spotlightView.setTarget(new ViewTarget(view));
             return this;
         }
 
@@ -942,7 +947,7 @@ public class SpotlightView extends FrameLayout {
          * @return the same builder instance
          */
         public Builder targetPadding(@Dimension int padding) {
-            spotlightView.setPadding(padding);
+            spotlightView.setTargetPadding(padding);
             return this;
         }
 
@@ -952,7 +957,7 @@ public class SpotlightView extends FrameLayout {
          * @param padding padding for the arc around the spotlight view
          * @return the same builder
          */
-        public Builder setExtraPaddingForArc(int padding) {
+        public Builder setExtraPaddingForHalfShape(int padding) {
             spotlightView.setExtraPaddingForHalfShape(padding);
             return this;
         }
@@ -1007,7 +1012,7 @@ public class SpotlightView extends FrameLayout {
          * @param duration long value as the duration of the line animation
          * @return the same builder
          */
-        public Builder lineAnimDuration(long duration) {
+        public Builder lineAnimationDuration(long duration) {
             spotlightView.setLineAnimationDuration(duration);
             return this;
         }
@@ -1058,7 +1063,7 @@ public class SpotlightView extends FrameLayout {
          * @return the same builder
          */
         public Builder setDescriptionView(@LayoutRes int layoutId, @IdRes int buttonId, OnClickListener listener) {
-            spotlightView.setLayoutResource(layoutId, buttonId, listener);
+            spotlightView.setDescriptionView(layoutId, buttonId, listener);
             return this;
         }
 

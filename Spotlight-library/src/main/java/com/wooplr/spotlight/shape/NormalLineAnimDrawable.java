@@ -123,6 +123,9 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
         if (animPoints != null) {
             animPointsLeft = animPoints;
         }
+        if (animPointsLeft.size() == 0) {
+            return;
+        }
         if (lineAnim == null) {
             lineAnim = getLineAnim();
         }
