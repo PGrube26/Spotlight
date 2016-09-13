@@ -26,4 +26,6 @@ public interface Target {
     int getViewWidth();
 
     int getViewHeight();
+
+    boolean isAttached();
 }
