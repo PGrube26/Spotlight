@@ -72,6 +72,9 @@ public class SpotlightView extends FrameLayout {
     //CS: STOP JAVADOC CHECK
     public static final int SHAPE_TYPE_CIRCLE = 0;
     public static final int SHAPE_TYPE_RECTANGLE = 1;
+
+    public static final String ERROR_WIDTH_HEIGHT_NULL = "Error width and height 0";
+    public static final String ERROR_TARGET_VIEW_NOT_ATTACHED = "Error target view not attached";
     //CS: RESUME JAVADOC CHECK
 
     /**
@@ -226,6 +229,8 @@ public class SpotlightView extends FrameLayout {
         super.onDraw(canvas);
 
         if (!isReady) return;
+        if (!canUpdateBitmap()) return;
+        else listener.onSpotlightError(ERROR_WIDTH_HEIGHT_NULL);
 
         if (bitmap == null || canvas == null) {
             if (bitmap != null) bitmap.recycle();
@@ -243,7 +248,6 @@ public class SpotlightView extends FrameLayout {
             canvas.drawBitmap(bitmap, 0, 0, null);
         }
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -315,6 +319,11 @@ public class SpotlightView extends FrameLayout {
 
         setReady(true);
 
+        if (!targetView.isAttached()) {
+            listener.onSpotlightError(ERROR_TARGET_VIEW_NOT_ATTACHED);
+            return;
+        }
+
         handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -332,6 +341,10 @@ public class SpotlightView extends FrameLayout {
                             }
                 , 100);
 
+    }
+
+    private boolean canUpdateBitmap() {
+        return width > 0 && height > 0;
     }
 
     /**

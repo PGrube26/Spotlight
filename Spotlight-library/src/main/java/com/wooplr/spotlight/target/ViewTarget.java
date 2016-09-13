@@ -2,6 +2,7 @@ package com.wooplr.spotlight.target;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.View;
 
 /**
@@ -67,5 +68,14 @@ public class ViewTarget implements Target {
     @Override
     public int getViewHeight() {
         return view.getHeight();
+    }
+
+    @Override
+    public boolean isAttached() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return view.isAttachedToWindow();
+        } else {
+            return view.getWindowToken() != null;
+        }
     }
 }

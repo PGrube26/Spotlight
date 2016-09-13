@@ -11,4 +11,9 @@ public interface SpotlightListener {
      * @param spotlightViewId the id of the spotlight which is dismissed
      */
     void onSpotlightDismissed(int spotlightViewId);
+
+    /**
+     * Called when the spotlight was not shown because of any failure.
+     */
+    void onSpotlightError(String errorMessage);
 }

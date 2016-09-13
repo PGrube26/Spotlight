@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
 import com.wooplr.spotlight.target.AnimPoint;
@@ -249,7 +250,7 @@ public class NormalLineAnimDrawable extends Drawable implements ValueAnimator.An
 
     @Override
     public int getOpacity() {
-        return 0;
+        return PixelFormat.UNKNOWN;
     }
 
     public List<AnimPoint> getPoints() {
