@@ -22,6 +22,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -228,14 +229,20 @@ public class SpotlightView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (!isReady) return;
-        if (!canUpdateBitmap()) return;
-        else listener.onSpotlightError(ERROR_WIDTH_HEIGHT_NULL);
+        if (!isReady) {
+            return;
+        } if (!canUpdateBitmap()) {
+            return;
+        } else if (listener != null){
+            listener.onSpotlightError(ERROR_WIDTH_HEIGHT_NULL);
+        }
 
         if (bitmap == null || canvas == null) {
             if (bitmap != null) bitmap.recycle();
 
-            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            // Fixing OutOfMemoryError
+            // It used to be ARGB_8888 which is highly inefficient and an overkill on most situations
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             this.canvas = new Canvas(bitmap);
         }
 
@@ -327,15 +334,25 @@ public class SpotlightView extends FrameLayout {
         handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    // We still need to check if the target view is attached or then we get an illegal state exception
+                                    if (!targetView.isAttached()) {
+                                        listener.onSpotlightError(ERROR_TARGET_VIEW_NOT_ATTACHED);
+                                        return;
+                                    }
+                                    try {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-                                        if (isRevealAnimationEnabled)
-                                            startRevealAnimation(activity);
-                                        else {
+                                            if (isRevealAnimationEnabled)
+                                                startRevealAnimation(activity);
+                                            else {
+                                                startFadeInAnimation(activity);
+                                            }
+                                        } else {
                                             startFadeInAnimation(activity);
                                         }
-                                    } else {
-                                        startFadeInAnimation(activity);
+                                    } catch (IllegalStateException e) {
+                                        // In any case we still try to catch exceptions. Would a problem arise, we notify the listener.
+                                        listener.onSpotlightError(ERROR_TARGET_VIEW_NOT_ATTACHED);
                                     }
                                 }
                             }
