@@ -242,7 +242,7 @@ public class SpotlightView extends FrameLayout {
 
             // Fixing OutOfMemoryError
             // It used to be ARGB_8888 which is highly inefficient and an overkill on most situations
-            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
             this.canvas = new Canvas(bitmap);
         }
 
