@@ -16,4 +16,9 @@ public interface SpotlightListener {
      * Called when the spotlight was not shown because of any failure.
      */
     void onSpotlightError(String errorMessage);
+
+    /**
+     * Called when spotlight was not shown because it was already shown to the user.
+     */
+    void onSpotlightWillNotShow();
 }

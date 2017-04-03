@@ -319,6 +319,7 @@ public class SpotlightView extends FrameLayout {
      */
     public void show(final Activity activity) {
         if (!viewShowStore.shouldShowHighlight(spotLightId)) {
+            listener.onSpotlightWillNotShow();
             return;
         }
 
